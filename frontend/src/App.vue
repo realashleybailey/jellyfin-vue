@@ -3,6 +3,7 @@
   <v-app>
     <router-view-transition is-root />
     <snackbar />
-    <player-element />
+    <pip-video-player />
   </v-app>
+  <player-element />
 </template>

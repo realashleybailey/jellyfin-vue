@@ -1,0 +1,130 @@
+<template>
+  <v-overlay
+    v-model="overlay"
+    eager
+    persistent
+    no-click-animation
+    scrim
+    scroll-strategy="none"
+    content-class="minimized-overlay"
+    :width="$vuetify.display.mobile ? '60vw' : '25vw'">
+    <v-hover>
+      <template #default="{ isHovering, props }">
+        <div v-bind="props" class="minimized-video-container" />
+        <v-overlay
+          :model-value="isHovering"
+          v-bind="props"
+          contained
+          eager
+          scrim
+          height="100%"
+          width="100%">
+          <div class="d-flex flex-column">
+            <div class="d-flex flex-row">
+              <v-btn icon @click="videoPlayer.toggleMinimize">
+                <v-icon>
+                  <i-mdi-arrow-expand-all />
+                </v-icon>
+              </v-btn>
+              <v-spacer />
+              <v-btn icon @click="playbackManager.stop">
+                <v-icon>
+                  <i-mdi-close />
+                </v-icon>
+              </v-btn>
+            </div>
+            <div
+              class="absolute-cover pointer-events-none d-flex flex-row justify-center align-center">
+              <v-btn
+                class="pointer-events-all"
+                icon
+                size="large"
+                @click="playbackManager.setPreviousTrack">
+                <v-icon size="32">
+                  <i-mdi-skip-previous />
+                </v-icon>
+              </v-btn>
+              <v-btn
+                class="pointer-events-all"
+                icon
+                size="x-large"
+                @click="playbackManager.playPause">
+                <v-icon size="48">
+                  <i-mdi-play v-if="playbackManager.isPaused" />
+                  <i-mdi-pause v-else />
+                </v-icon>
+              </v-btn>
+              <v-btn
+                class="pointer-events-all"
+                icon
+                size="large"
+                @click="playbackManager.setNextTrack">
+                <v-icon size="32">
+                  <i-mdi-skip-next />
+                </v-icon>
+              </v-btn>
+            </div>
+          </div>
+        </v-overlay>
+      </template>
+    </v-hover>
+  </v-overlay>
+</template>
+
+<script lang="ts" setup>
+import { computed, watch } from 'vue';
+import { playbackManagerStore, videoPlayerStore } from '@/store';
+
+const videoPlayer = videoPlayerStore();
+const playbackManager = playbackManagerStore();
+
+const overlay = computed({
+  get() {
+    return (
+      playbackManager.currentlyPlayingMediaElement === 'video' &&
+      videoPlayer.isMinimized
+    );
+  },
+  set() {
+    videoPlayer.toggleMinimize();
+  }
+});
+
+const keyPressMappings: { [key: string]: () => void } = {
+  f: () => {
+    if (playbackManager.currentlyPlayingMediaType === 'Video') {
+      videoPlayer.toggleMinimize();
+    }
+  }
+};
+
+/**
+ * Handles the key presses
+ */
+function handleKeyPress(e: KeyboardEvent): void {
+  if (keyPressMappings[e.key]) {
+    keyPressMappings[e.key]();
+  }
+}
+
+watch(overlay, (newValue) => {
+  if (newValue) {
+    window.addEventListener('keyup', handleKeyPress);
+  } else {
+    window.removeEventListener('keyup', handleKeyPress);
+  }
+});
+</script>
+
+<style>
+.minimized-overlay {
+  position: absolute;
+  right: 2em;
+  bottom: 2em;
+}
+
+.minimized-video-container video {
+  max-width: 100%;
+  max-height: 100%;
+}
+</style>

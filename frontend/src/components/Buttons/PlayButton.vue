@@ -92,7 +92,7 @@ export default defineComponent({
         await this.playbackManager.play({
           item: this.item,
           audioTrackIndex: this.audioTrackIndex,
-          subtitleTrackIndex: this.subtitleTrackIndex || -1,
+          subtitleTrackIndex: this.subtitleTrackIndex,
           videoTrackIndex: this.videoTrackIndex,
           startFromTime:
             ticksToMs(this.item.UserData?.PlaybackPositionTicks) / 1000
@@ -104,7 +104,7 @@ export default defineComponent({
         await this.playbackManager.play({
           item: this.item,
           audioTrackIndex: this.audioTrackIndex,
-          subtitleTrackIndex: this.subtitleTrackIndex || -1,
+          subtitleTrackIndex: this.subtitleTrackIndex,
           videoTrackIndex: this.videoTrackIndex,
           startShuffled: true
         });
@@ -112,7 +112,7 @@ export default defineComponent({
         await this.playbackManager.play({
           item: this.item,
           audioTrackIndex: this.audioTrackIndex,
-          subtitleTrackIndex: this.subtitleTrackIndex || -1,
+          subtitleTrackIndex: this.subtitleTrackIndex,
           videoTrackIndex: this.videoTrackIndex
         });
       }
