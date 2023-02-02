@@ -152,7 +152,13 @@ if (
   trackIndex.value = selectItems.value[0].value;
 }
 
-emits('input', trackIndex.value);
+watch(
+  trackIndex,
+  (newValue) => {
+    emits('input', newValue);
+  },
+  { immediate: true }
+);
 
 watch(
   () => props.defaultStreamIndex,
